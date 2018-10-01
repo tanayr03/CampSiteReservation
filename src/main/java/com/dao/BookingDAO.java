@@ -14,6 +14,6 @@ import java.util.List;
 public interface BookingDAO {
 	int save(Booking booking);
 	List<Booking> getList(int id);
-    List<Booking> getListFromTill(LocalDate from, LocalDate till);
+    List<Booking> getListFromTill(LocalDate from, LocalDate till,int bId);
     public Booking saveUpdate(Booking booking);
 }

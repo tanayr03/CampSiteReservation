@@ -25,7 +25,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(rollbackFor = Exception.class)
 	public int bookCampsite(Booking booking) throws Exception {
-	        validateBooking(booking);
+	        validateBooking(booking,-1);
 	        booking.setStatus("confirmed");
             return bookingDAO.save(booking);
 	}
@@ -56,6 +56,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Booking updateBooking(Booking booking) throws Exception{
+        validateBooking(booking,booking.getId());
         bookingDAO.saveUpdate(booking);
         return booking;
     }
@@ -66,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
         LocalDate from3 = from.minusDays(3);
         LocalDate till3 = till.plusDays(3);
         List<BookingAvailability> bookings = new ArrayList<>();
-        HashSet<Date> bookedDatesSet = getBookedDatesHashSet(from3,till3);
+        HashSet<Date> bookedDatesSet = getBookedDatesHashSet(from3,till3,-1);
         LocalDate x = from;
 
         while(!x.isEqual(till.plusDays(1))){
@@ -94,11 +95,11 @@ public class BookingServiceImpl implements BookingService {
         return bookings ;
     }
 
-    private boolean checkAvailability(LocalDate from, LocalDate till) throws Exception {
+    private boolean checkAvailability(LocalDate from, LocalDate till,int bId) throws Exception {
         boolean available = false;
         LocalDate from3 = from.minusDays(3);
         LocalDate till3 = till.plusDays(3);
-        HashSet<Date> bookedDatesSet = getBookedDatesHashSet(from3,till3);
+        HashSet<Date> bookedDatesSet = getBookedDatesHashSet(from3,till3,bId);
         LocalDate x = from;
         while(!(x.isEqual(till.plusDays(1)))){
             if(bookedDatesSet.contains(Date.valueOf(x))){
@@ -111,8 +112,8 @@ public class BookingServiceImpl implements BookingService {
         return available;
     }
 
-	private HashSet<Date> getBookedDatesHashSet(LocalDate from3,LocalDate till3){
-        List<Booking> bookings = bookingDAO.getListFromTill(from3,till3);
+	private HashSet<Date> getBookedDatesHashSet(LocalDate from3,LocalDate till3,int bId){
+        List<Booking> bookings = bookingDAO.getListFromTill(from3,till3,bId);
         HashSet<Date> bookedDatesSet = new HashSet<>();
         for(Booking b:bookings){
             System.out.println(b);
@@ -130,7 +131,7 @@ public class BookingServiceImpl implements BookingService {
         return bookedDatesSet;
     }
 
-    private void validateBooking(Booking booking) throws Exception{
+    private void validateBooking(Booking booking,int bId) throws Exception{
 
 	    if(booking == null){
             throw new Exception("Invalid details");
@@ -180,7 +181,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new Exception("You can book the campsite for a maximum of three days");
             }
         }
-        checkAvailability(booking.getArrival(),booking.getDeparture());
+        checkAvailability(booking.getArrival(),booking.getDeparture(),bId);
     }
 
     private static boolean isValidEmailAddress(String email) {

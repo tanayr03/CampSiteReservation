@@ -13,5 +13,4 @@ public interface BookingService {
     Booking getBookingById(int id) throws Exception;
     Booking cancelBooking(int id) throws Exception;
     Booking updateBooking(Booking booking) throws Exception;
-
 }

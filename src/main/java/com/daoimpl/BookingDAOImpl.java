@@ -57,9 +57,9 @@ public class BookingDAOImpl implements BookingDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Booking> getListFromTill(LocalDate from, LocalDate till) {
+	public List<Booking> getListFromTill(LocalDate from, LocalDate till,int bId) {
 		Session session = this.sessionFactory.openSession();
-		String hql = "FROM Booking B WHERE B.arrival >='" +Date.valueOf(from) + "' AND B.departure <= '" + Date.valueOf(till) + "'";
+		String hql = "FROM Booking B WHERE B.arrival >='" +Date.valueOf(from) + "' AND B.departure <= '" + Date.valueOf(till) + "'" + " AND B.id != " +bId ;
 		List<Booking> bookingList = session.createQuery(hql).list();
 		System.out.println(hql);
 		session.close();
