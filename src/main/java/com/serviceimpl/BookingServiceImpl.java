@@ -23,7 +23,6 @@ public class BookingServiceImpl implements BookingService {
 	@Autowired
 	BookingDAO bookingDAO;
     @Override
-    @Transactional(rollbackFor = Exception.class)
 	public int bookCampsite(Booking booking) throws Exception {
 	        validateBooking(booking,-1);
 	        booking.setStatus("confirmed");
@@ -31,7 +30,6 @@ public class BookingServiceImpl implements BookingService {
 	}
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Booking getBookingById(int id) throws Exception{
         List<Booking> list =  bookingDAO.getList(id);
         if(list.size()==0){
@@ -41,7 +39,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Booking cancelBooking(int id) throws Exception{
         List<Booking> list =  bookingDAO.getList(id);
         if(list.size()==0){
@@ -54,7 +51,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Booking updateBooking(Booking booking) throws Exception{
         validateBooking(booking,booking.getId());
         bookingDAO.saveUpdate(booking);
@@ -62,7 +58,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public List<BookingAvailability> getAvailability(LocalDate from, LocalDate till){
         LocalDate from3 = from.minusDays(3);
         LocalDate till3 = till.plusDays(3);
